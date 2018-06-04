@@ -7,14 +7,13 @@ MongoClient.connect("mongodb://localhost:27017/AppTodo", { useNewUrlParser: true
     console.log("Se ha podido conectar a la base de datos!");
     const db = client.db("AppTodo");
 
-    db.collection("Users").find({name: "Ramiro"}).toArray().then(
-        (docs)=>{
-            console.log("Users: ");
-            console.log(JSON.stringify(docs,undefined,2));
-        }, (err) =>{
-            console.log("No se pudo conseguir los usuarios",err);
-        }
-    );
+    // db.collection("Users").deleteMany({name:"Ramiro"}).then((result)=>{
+    //     console.log(result);
+    // });
+
+    db.collection("Users").findOneAndDelete({ _id: new ObjectID("5b10db20e57553358016bc3a")}).then((result)=>{
+        console.log(result);
+    });
 
     //client.close();
 });
