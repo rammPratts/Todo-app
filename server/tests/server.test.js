@@ -250,7 +250,7 @@ describe("GET /users/me", () => {
   });
 });
 
-describe("POST /users", () => {
+describe("POST /users/signup", () => {
   var email = "example@example.com"
   var password = "aValidPass";
   var invalidEmail = "notAValidEmail";
@@ -259,7 +259,7 @@ describe("POST /users", () => {
 
   it("should create a user", (done) => {
     request(app)
-      .post("/users")
+      .post("/users/signup")
       .send({email, password})
       .expect(200)
       .expect((res) => {
@@ -282,7 +282,7 @@ describe("POST /users", () => {
 
   it("should return validation errors if request invalid", (done) => {
     request(app)
-      .post("/users")
+      .post("/users/signup")
       .send({invalidEmail,invalidPass})
       .expect(400)
       .expect((res) => {
@@ -295,7 +295,7 @@ describe("POST /users", () => {
 
   it("should not create user if email in use", (done) => {
     request(app)
-    .post("/users")
+    .post("/users/signup")
     .send({usedEmail,password})
     .expect(400)
     .expect((res) => {
@@ -358,10 +358,10 @@ describe("POST /users/login", () => {
   });
 });
 
-describe("DELETE /users/me/token", () => {
+describe("DELETE /users/logout", () => {
   it("should delete token when logoutt", (done) => {
     request(app)
-      .delete("/users/me/token")
+      .delete("/users/logout")
       .set("x-auth", users[0].tokens[0].token)
       .expect(200)
       .end((err,res) => {
