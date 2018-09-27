@@ -136,6 +136,15 @@ app.delete("/users/logout", authenticate, (req, res) => {
     }).catch((e) => res.status(400).send(e));
 })
 
+app.delete("/users/user", authenticate, (req, res) => {
+    var body = _.pick(req.body,["password"]);
+
+
+    req.user.removeUser(req.user._id, body.password).then((user) => {
+        res.status(200).send(user);
+    }).catch((e) => res.status(400).send());
+});
+
 app.listen(port,()=>{
     console.log(`Server is up on ${port}`);
 });

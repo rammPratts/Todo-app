@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const _ = require("lodash");
 const bcrypt = require("bcryptjs");
 
+var {Todo} = require("./todo");
+
 var UserSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -60,6 +62,25 @@ UserSchema.methods.removeToken = function(token) {
             tokens: {token}
         }
     });
+}
+
+UserSchema.methods.removeUser = function(_id, password){
+    var user = this;
+
+    return new Promise((resolve, reject) =>{ 
+        bcrypt.compare(password, user.password, (err, res) => {
+            if(res){
+                Todo.deleteMany({_creator: _id}).then((todo) => {
+                    User.findByIdAndRemove(_id).then((deletedUser) => {
+                        resolve(deletedUser);
+                    });
+                });
+            }else{
+                reject(err);
+            }
+        });
+    })
+    
 }
 
 UserSchema.statics.findByToken = function(token) {
