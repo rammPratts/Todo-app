@@ -142,7 +142,7 @@ app.delete("/users/user", authenticate, (req, res) => {
 
     req.user.removeUser(req.user._id, body.password).then((user) => {
         res.status(200).send(user);
-    }).catch((e) => res.status(400).send());
+    }).catch((e) => res.status(401).send());
 });
 
 app.listen(port,()=>{

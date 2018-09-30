@@ -376,3 +376,79 @@ describe("DELETE /users/logout", () => {
       });
   });
 });
+
+describe("DELETE /users/user", () => {
+  var invalidPass = "notavalidpass";
+  var password = users[0].password;
+
+  it("should delete user", (done) => {
+    request(app)
+      .delete("/users/user")
+      .set("x-auth", users[0].tokens[0].token)
+      .send({password})
+      .expect(200)
+      .end((err,res) => {
+        if(err){
+          return done(err);
+        }
+
+        User.find().then((user) => {
+          expect(user.length).toBe(1);
+          done();
+        });
+      });
+  });
+
+  it("should not delete user when password is incorrect", (done) => {
+    request(app)
+    .delete("/users/user")
+    .set("x-auth", users[0].tokens[0].token)
+    .send({invalidPass})
+    .expect(401)
+    .end((err,res) => {
+      if(err){
+        return done(err);
+      }
+
+      User.find().then((user) => {
+        expect(user.length).toBe(2);
+        done();
+      });
+    });
+  });
+
+  it("should not delete user if not authenticated", (done) => {
+    request(app)
+    .delete("/users/user")
+    .send({password})
+    .expect(401)
+    .end((err,res) => {
+      if(err){
+        return done(err);
+      }
+
+      User.find().then((user) => {
+        expect(user.length).toBe(2);
+        done();
+      });
+    });
+  });
+
+  it("should not delete another user", (done) => {
+    request(app)
+    .delete("/users/user")
+    .set("x-auth", users[1].tokens[0].token)
+    .send({password})
+    .expect(401)
+    .end((err,res) => {
+      if(err){
+        return done(err);
+      }
+
+      User.find().then((user) => {
+        expect(user.length).toBe(2);
+        done();
+      });
+    });
+  });
+})
